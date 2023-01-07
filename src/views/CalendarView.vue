@@ -2,24 +2,44 @@
   <div v-if="pageReady">
     <router-link to="/">Back</router-link>
     <br>
-    <h1 class="calendar-name">{{ `${calendar.name} (${calendar.year})` }}</h1>
-    <div class="d-flex">
+    <template v-if="editing">
+      <form @submit.prevent="updateCalendar">
+        <div>
+          <label for="name">Calendar Name</label>
+          <br>
+          <input type="text" v-model="calendar.name" required style="padding: 8px 12px;">
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+          <button type="button" @click="editing = false">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </template>
+    <template v-else>
       <div>
-        <div v-for="m in 12" :key="m">
-          <button 
-            class="month-toggle" 
-            @click="toggleMonth(m - 1)">
-            {{ getMonthName(m - 1) }}
-          </button>
+        <h1 class="calendar-name">{{ `${calendar.name} (${calendar.year})` }}</h1>
+        <div style="text-align: right;">
+          <button type="button" @click="edit">Edit Calendar</button>
         </div>
       </div>
+      <div class="d-flex">
+        <div>
+          <div v-for="m in 12" :key="m">
+            <button 
+              class="month-toggle" 
+              @click="toggleMonth(m - 1)">
+              {{ getMonthName(m - 1) }}
+            </button>
+          </div>
+        </div>
 
-      <div>
-        <Calendar 
-          :month="calendar.data[monthToShow]"
-          @toggle-date="toggleDate" />
+        <div>
+          <Calendar 
+            :month="calendar.data[monthToShow]"
+            @toggle-date="toggleDate" />
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -61,6 +81,7 @@ const calendar = ref<CalendarInterface>({
     days: [{ day: 0, checked: false, }],
   }],
 });
+const editing = ref(false);
 
 onBeforeMount(() => {
   const stored = localStorage.getItem('calendars');
@@ -95,6 +116,11 @@ function toggleMonth(idx: number) {
   saveCalendar(calendar);
 }
 
+function updateCalendar() {
+  saveCalendar(calendar);
+  editing.value = false;
+}
+
 function saveCalendar(calendar: Ref<CalendarInterface>) {
   const cals: Array<CalendarInterface> = JSON.parse(localStorage.getItem('calendars') ?? '');
   const calIdx = cals.findIndex(c => c.id === calendar.value.id);
@@ -108,6 +134,10 @@ function saveCalendar(calendar: Ref<CalendarInterface>) {
 function toggleDate({ month, day }: { month: number, day: number }) {
   calendar.value.data[month].days[day].checked = !calendar.value.data[month].days[day].checked;
   saveCalendar(calendar);
+}
+
+function edit() {
+  editing.value = true;
 }
 </script>
 
