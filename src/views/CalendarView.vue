@@ -43,7 +43,15 @@ const props = defineProps({
 });
 const router = useRouter();
 const pageReady = ref(false);
-const calendar = ref<CalendarInterface>();
+const calendar = ref<CalendarInterface>({
+  id: '',
+  name: '',
+  data: [{
+    short: '',
+    full: '',
+    days: [{ day: 0, checked: false, }],
+  }],
+});
 const monthToShow = ref(0);
 
 onBeforeMount(() => {
