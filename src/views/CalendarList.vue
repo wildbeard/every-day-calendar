@@ -1,26 +1,38 @@
 <template>
   <div>
-    <h1>Your EDC Calendars</h1>
+    <h1>{{ addingCalendar ? 'Create Calendar' : 'Your Calendars' }}</h1>
 
-    <template v-if="calendars.length">
-      <ul>
-        <li v-for="(calendar, c) in calendars" :key="c">
-          <router-link :to="`/calendars/${calendar.id}`">
-            {{ calendar.name }}
-          </router-link>
-          <button style="margin-left: 15px;" @click="removeCalendar(c)">x</button>
-        </li>
-        <li>
-          <button @click="addCalendar">Add Calendar</button>
-        </li>
-      </ul>
+    <template v-if="addingCalendar">
+     <form @submit.prevent="saveCalendar">
+        <div>
+          <label for="name">Calendar Name</label>
+          <br>
+          <input style="padding: 8px 12px;" type="text" id="name" v-model="calendarName" />
+        </div>
+        <button style="margin-top: 15px;" type="submit">Save</button>
+     </form>
     </template>
     <template v-else>
-      <div>
-        <p>Looks like you don't have any calendars setup!</p>
-        <button @click="addCalendar">Add Calendar</button>
-      </div>
-    </template>
+      <template v-if="calendars.length">
+        <ul>
+          <li v-for="(calendar, c) in calendars" :key="c">
+            <router-link :to="`/calendars/${calendar.id}`">
+              {{ calendar.name }}
+            </router-link>
+            <button style="margin-left: 15px;" @click="removeCalendar(c)">x</button>
+          </li>
+          <li>
+            <button @click="addCalendar">Add Calendar</button>
+          </li>
+        </ul>
+      </template>
+      <template v-else>
+        <div>
+          <p>Looks like you don't have any calendars setup!</p>
+          <button style="margin-top: 15px;" @click="addCalendar">Add Calendar</button>
+        </div>
+      </template>
+      </template>
   </div>
 </template>
 
@@ -28,7 +40,7 @@
 import { 
   onBeforeMount,
   onBeforeUnmount,
-  ref
+  ref,
 } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -50,6 +62,8 @@ interface Calendar {
 
 const router = useRouter();
 const calendars = ref<Array<Calendar>>([]); 
+const addingCalendar = ref(false);
+const calendarName = ref('');
 const handleUnload = () => {
   localStorage.setItem('calendars', JSON.stringify(calendars.value));
 };
@@ -63,7 +77,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('beforeunload', handleUnload);
 });
 
-const getId = (): string => {
+function getId(): string {
   const rng = window.crypto;
   const avail = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let id = '';
@@ -82,7 +96,8 @@ const getId = (): string => {
   }
 
   return id;
-};
+}
+
 function buildMonths(year: number): Array<Month> {
   function daysInMonth (month: number, year: number) {
     return 32 - (new Date(year, month, 32)).getDate();
@@ -98,16 +113,19 @@ function buildMonths(year: number): Array<Month> {
 }
 
 function addCalendar() {
-  const count = calendars.value.length ? calendars.value.length + 1 : 1;
+  addingCalendar.value = true;
+}
+
+function saveCalendar() {
   const currentYear = (new Date()).getFullYear();
   const calendar: Calendar = {
     id: getId(),
-    name: `New Calendar ${count}`,
+    name: calendarName.value,
     year: currentYear,
     data: buildMonths(currentYear),
   };
   calendars.value.push(calendar);
-  // Hacky Wacky Town
+  //
   handleUnload();
   router.push({ path: `/calendars/${calendar.id}` });
 }
