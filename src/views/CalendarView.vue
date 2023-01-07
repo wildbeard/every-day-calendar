@@ -6,7 +6,11 @@
     <div class="d-flex">
       <div>
         <div v-for="m in 12" :key="m">
-          <button class="month-toggle" @click="toggleMonth(m - 1)">{{ getMonthName(m - 1) }}</button>
+          <button 
+            class="month-toggle" 
+            @click="toggleMonth(m - 1)">
+            {{ getMonthName(m - 1) }}
+          </button>
         </div>
       </div>
 
@@ -20,7 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, computed } from 'vue';
+import type { Ref } from 'vue';
 import { useRouter } from 'vue-router';
 //
 import Calendar from '../components/Calendar.vue';
@@ -38,6 +43,7 @@ interface CalendarInterface {
   id?: string,
   name?: string,
   year?: number,
+  shownMonth?: number,
   data: Month[],
 }
 
@@ -55,7 +61,6 @@ const calendar = ref<CalendarInterface>({
     days: [{ day: 0, checked: false, }],
   }],
 });
-const monthToShow = ref(0);
 
 onBeforeMount(() => {
   const stored = localStorage.getItem('calendars');
@@ -76,6 +81,9 @@ onBeforeMount(() => {
   calendar.value = storedCalendar;
 });
 
+const monthToShow = computed(() => {
+  return calendar.value.shownMonth ?? 0;
+});
 pageReady.value = true;
 
 function getMonthName(idx: number): String {
@@ -83,22 +91,23 @@ function getMonthName(idx: number): String {
 }
 
 function toggleMonth(idx: number) {
-  monthToShow.value = idx;
+  calendar.value.shownMonth = idx;
+  saveCalendar(calendar);
 }
 
-function saveCalendar(calendar: CalendarInterface) {
+function saveCalendar(calendar: Ref<CalendarInterface>) {
   const cals: Array<CalendarInterface> = JSON.parse(localStorage.getItem('calendars') ?? '');
-  const calIdx = cals.findIndex(c => c.id === calendar.id);
+  const calIdx = cals.findIndex(c => c.id === calendar.value.id);
 
   if (calIdx !== -1) {
-    cals.splice(calIdx, 0, calendar);
+    cals[calIdx] = calendar.value;
     localStorage.setItem('calendars', JSON.stringify(cals));
   }
 }
 
 function toggleDate({ month, day }: { month: number, day: number }) {
   calendar.value.data[month].days[day].checked = !calendar.value.data[month].days[day].checked;
-  saveCalendar(calendar.value);
+  saveCalendar(calendar);
 }
 </script>
 
