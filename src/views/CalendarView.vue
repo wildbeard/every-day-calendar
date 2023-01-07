@@ -1,9 +1,19 @@
 <template>
   <div v-if="pageReady">
     <h1>{{ calendar.name }}</h1>
-    <Calendar 
-    :month="selectedMonth"
-    :month-data="monthData" />
+    <div class="d-flex">
+      <div>
+        <div v-for="m in 12" :key="m">
+          <button class="month-toggle" @click="toggleMonth(m - 1)">{{ getMonthName(m - 1) }}</button>
+        </div>
+      </div>
+
+      <div>
+        <Calendar 
+          :month="calendar.data[monthToShow]"
+          @toggle-date="toggleDate" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -13,9 +23,19 @@ import { useRouter } from 'vue-router';
 //
 import Calendar from '../components/Calendar.vue';
 
+interface Day {
+  day: number,
+  checked: boolean,
+}
+interface Month {
+  short: string,
+  full: string,
+  days: Day[],
+}
 interface CalendarInterface {
   id?: string,
   name?: string,
+  data: Month[],
 }
 
 const props = defineProps({
@@ -23,13 +43,13 @@ const props = defineProps({
 });
 const router = useRouter();
 const pageReady = ref(false);
-const calendar = ref<CalendarInterface>({});
+const calendar = ref<CalendarInterface>();
+const monthToShow = ref(0);
 
 onBeforeMount(() => {
   const stored = localStorage.getItem('calendars');
 
   if (!stored) {
-    console.log('no stored');
     router.push({ path: '/calendars?notFound=true' });
     return;
   }
@@ -38,7 +58,6 @@ onBeforeMount(() => {
     .find((c: CalendarInterface) => c.id === props.id);
 
   if (!storedCalendar) {
-    console.log('specific not found');
     router.push({ path: '/calendars?notFound=true' });
     return;
   }
@@ -48,6 +67,36 @@ onBeforeMount(() => {
 
 pageReady.value = true;
 
-const selectedMonth = ref((new Date().getMonth()));
-const monthData = ref([{}]);
+function getMonthName(idx: number): String {
+  return (new Date(0, idx)).toLocaleString('en-us', { month: 'long' });
+}
+
+function toggleMonth(idx: number) {
+  monthToShow.value = idx;
+}
+
+function saveCalendar(calendar: CalendarInterface) {
+  const cals: Array<CalendarInterface> = JSON.parse(localStorage.getItem('calendars') ?? '');
+  const calIdx = cals.findIndex(c => c.id === calendar.id);
+
+  if (calIdx !== -1) {
+    cals.splice(calIdx, 0, calendar);
+    localStorage.setItem('calendars', JSON.stringify(cals));
+  }
+}
+
+function toggleDate({ month, day }: { month: number, day: number }) {
+  calendar.value.data[month].days[day].checked = !calendar.value.data[month].days[day].checked;
+  saveCalendar(calendar.value);
+}
 </script>
+
+<style scoped>
+.d-flex {
+  display: flex;
+  margin-top: 25px;
+}
+.d-flex div:first-child {
+  margin-right: 25px;
+}
+</style>

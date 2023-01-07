@@ -8,6 +8,7 @@
           <router-link :to="`/calendars/${calendar.id}`">
             {{ calendar.name }}
           </router-link>
+          <button style="margin-left: 15px;" @click="removeCalendar(c)">x</button>
         </li>
         <li>
           <button @click="addCalendar">Add Calendar</button>
@@ -31,9 +32,20 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 
+interface Day {
+  day: number,
+  checked: boolean,
+}
+interface Month {
+  short: string,
+  full: string,
+  days: Day[],
+}
 interface Calendar {
   id: string,
   name: string,
+  year: number,
+  data: Month,
 }
 
 const router = useRouter();
@@ -71,19 +83,36 @@ const getId = (): string => {
 
   return id;
 };
-const addCalendar = () => {
+function buildMonths(year: number): Array<Month> {
+  function daysInMonth (month: number, year: number) {
+    return 32 - (new Date(year, month, 32)).getDate();
+  }
+    return Array.from(Array(12), (_, i) => {
+      const month = new Date(0, i);
+      return {
+        short: month.toLocaleString('en-us', { month: 'short' }),
+        full: month.toLocaleString('en-us', { month: 'long' }),
+        days: Array.from(Array(daysInMonth(i, year)), (_, d) => ({ day: d + 1, checked: false })),
+      };
+    });
+}
+
+function addCalendar() {
   const count = calendars.value.length ? calendars.value.length + 1 : 1;
-  const calendar = {
+  const currentYear = (new Date()).getFullYear();
+  const calendar: Calendar = {
     id: getId(),
     name: `New Calendar ${count}`,
-    data: Array.from(Array(365), (_, i) => ({
-      day: i + 1,
-      checked: false,
-    })),
+    year: currentYear,
+    data: buildMonths(currentYear),
   };
   calendars.value.push(calendar);
   // Hacky Wacky Town
   handleUnload();
   router.push({ path: `/calendars/${calendar.id}` });
-};
+}
+
+function removeCalendar(idx: number) {
+  calendars.value.splice(idx, 1);
+}
 </script>

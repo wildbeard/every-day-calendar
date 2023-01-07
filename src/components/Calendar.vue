@@ -1,17 +1,15 @@
 <template>
   <div class="wrapper">
-    <div class="month" 
-      v-for="(month, m) in months"
-      :key="m">
+    <div class="month" >
       <div class="month-name">
-        {{ month.month }}
+        {{ month.full }}
       </div>
       <div class="week" v-for="(week, w) in weeks" :key="w">
         <div class="day"
           v-for="(day, d) in week"
-          :key="`${m}-${d}`"
+          :key="`${month.short}-${d}`"
           :class="{ checked: day.checked }"
-          @click="toggleCheck(m, day.day - 1)">
+          @click="toggleCheck(day.day - 1)">
           {{ day.day }} <br>
         </div>
       </div>
@@ -20,29 +18,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineProps, defineEmits } from 'vue';
+import { computed, defineProps, defineEmits } from 'vue';
 
+interface Day {
+  day: number,
+  checked: boolean,
+}
+interface Month {
+  short: string,
+  full: string,
+  days: Day[],
+}
 interface Props {
-  month: Number,
-  monthData: Array<{}>,
+  month: Month,
 }
 
 const props = defineProps<Props>();
-
-const currentYear = (new Date()).getFullYear();
-const daysInMonth = (month: number, year: number) => {
-  return 32 - (new Date(year, month, 32)).getDate();
-};
-const months = ref(Array.from([props.month], (_, i) => {
-  const m = new Date(0, i).toLocaleString('en-us', { month: 'short' });
-  return {
-    month: m,
-    days: Array.from(Array(daysInMonth(i, currentYear)), (_, d) => ({ day: d + 1, checked: false, })),
-  };
-}));
+const emits = defineEmits(['toggleDate']);
 
 const weeks = computed(() => {
-  const days = months.value[0].days;
+  const days = props.month.days;
   const weeks = [];
 
   for (let i = 0; i < days.length; i += 7) {
@@ -52,9 +47,24 @@ const weeks = computed(() => {
   return weeks;
 });
 
-const toggleCheck = (month: number, day: number) => {
-  months.value[month].days[day].checked = !months.value[month].days[day].checked;
-};
+function toggleCheck(day: number) {
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const month = months.indexOf(props.month.short);
+  emits('toggleDate', { month, day });
+}
 </script>
 
 <style>
