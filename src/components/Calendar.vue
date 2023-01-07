@@ -73,6 +73,7 @@ function toggleCheck(day: number) {
 }
 .month-name {
   margin-bottom: 15px;
+  font-size: 1.75rem;
 }
 .month {
   padding: 0 10px;

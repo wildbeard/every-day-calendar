@@ -1,6 +1,6 @@
 <template>
   <div v-if="pageReady">
-    <h1>{{ calendar.name }}</h1>
+    <h1 class="calendar-name">{{ calendar.name }}</h1>
     <div class="d-flex">
       <div>
         <div v-for="m in 12" :key="m">
@@ -104,7 +104,14 @@ function toggleDate({ month, day }: { month: number, day: number }) {
   display: flex;
   margin-top: 25px;
 }
-.d-flex div:first-child {
+.d-flex > div:first-child {
   margin-right: 25px;
+}
+.month-toggle {
+  width: 100%;
+  margin-bottom: 5px;
+}
+.calendar-name {
+  font-size: 1.75rem;
 }
 </style>
