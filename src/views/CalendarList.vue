@@ -45,7 +45,7 @@ interface Calendar {
   id: string,
   name: string,
   year: number,
-  data: Month,
+  data: Month[],
 }
 
 const router = useRouter();
@@ -72,7 +72,7 @@ const getId = (): string => {
     let num = 0;
 
     if (rng !== undefined) {
-      // TS ??
+      // @ts-ignore
       num = rng.getRandomValues(new Uint32Array(1)) / 4294967296; 
     } else {
       num = Math.random();
