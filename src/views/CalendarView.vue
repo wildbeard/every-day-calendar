@@ -1,5 +1,7 @@
 <template>
   <div v-if="pageReady">
+    <router-link to="/">Back</router-link>
+    <br>
     <h1 class="calendar-name">{{ `${calendar.name} (${calendar.year})` }}</h1>
     <div class="d-flex">
       <div>
