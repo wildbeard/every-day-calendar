@@ -81,7 +81,6 @@ function toggleCheck(day: number) {
 }
 .week {
   display: flex;
-  justify-content: space-between;
   margin-bottom: 10px;
 }
 .day {
