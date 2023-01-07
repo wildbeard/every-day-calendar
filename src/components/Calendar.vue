@@ -1,13 +1,17 @@
 <template>
   <div class="wrapper">
-    <div class="month" >
+    <div class="month">
       <div class="month-name">
         {{ month.full }}
       </div>
-      <div class="week" v-for="(week, w) in weeks" :key="w">
-        <div class="day"
+      <div
+        v-for="(week, w) in weeks"
+        :key="w"
+        class="week">
+        <div
           v-for="(day, d) in week"
           :key="`${month.short}-${d}`"
+          class="day"
           :class="{ checked: day.checked }"
           @click="toggleCheck(day.day - 1)">
           {{ day.day }} <br>

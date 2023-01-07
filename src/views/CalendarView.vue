@@ -1,30 +1,50 @@
 <template>
   <div v-if="pageReady">
-    <router-link to="/">Back</router-link>
+    <router-link to="/">
+      Back
+    </router-link>
     <br>
     <template v-if="editing">
       <form @submit.prevent="updateCalendar">
         <div>
           <label for="name">Calendar Name</label>
           <br>
-          <input type="text" v-model="calendar.name" required style="padding: 8px 12px;">
+          <input
+            v-model="calendar.name"
+            type="text"
+            required
+            style="padding: 8px 12px;">
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-          <button type="button" @click="editing = false">Cancel</button>
-          <button type="submit">Save</button>
+          <button
+            type="button"
+            @click="editing = false">
+            Cancel
+          </button>
+          <button type="submit">
+            Save
+          </button>
         </div>
       </form>
     </template>
     <template v-else>
       <div>
-        <h1 class="calendar-name">{{ `${calendar.name} (${calendar.year})` }}</h1>
+        <h1 class="calendar-name">
+          {{ `${calendar.name} (${calendar.year})` }}
+        </h1>
         <div style="text-align: right;">
-          <button type="button" @click="edit">Edit Calendar</button>
+          <button
+            type="button"
+            @click="edit">
+            Edit Calendar
+          </button>
         </div>
       </div>
       <div class="d-flex">
         <div>
-          <div v-for="m in 12" :key="m">
+          <div
+            v-for="m in 12"
+            :key="m">
             <button 
               class="month-toggle" 
               @click="toggleMonth(m - 1)">
@@ -78,7 +98,7 @@ const calendar = ref<CalendarInterface>({
   data: [{
     short: '',
     full: '',
-    days: [{ day: 0, checked: false, }],
+    days: [{ day: 0, checked: false }],
   }],
 });
 const editing = ref(false);
@@ -108,7 +128,8 @@ const monthToShow = computed(() => {
 pageReady.value = true;
 
 function getMonthName(idx: number): String {
-  return (new Date(0, idx)).toLocaleString('en-us', { month: 'long' });
+  return (new Date(0, idx))
+.toLocaleString('en-us', { month: 'long' });
 }
 
 function toggleMonth(idx: number) {

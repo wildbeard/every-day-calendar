@@ -3,44 +3,62 @@
     <h1>{{ addingCalendar ? 'Create Calendar' : 'Your Calendars' }}</h1>
 
     <template v-if="addingCalendar">
-     <form @submit.prevent="saveCalendar">
+      <form @submit.prevent="saveCalendar">
         <div>
           <label for="name">Calendar Name</label>
           <br>
           <input 
-            type="text" 
             id="name" 
-            required
-            v-model="calendarName" />
+            v-model="calendarName" 
+            type="text"
+            required>
         </div>
 
-        <div style="margin-top: 15px;" class="form-actions">
-          <button @click="cancel">Cancel</button>
-          <button type="submit">Save</button>
+        <div
+          style="margin-top: 15px;"
+          class="form-actions">
+          <button @click="cancel">
+            Cancel
+          </button>
+          <button type="submit">
+            Save
+          </button>
         </div>
-     </form>
+      </form>
     </template>
     <template v-else>
       <template v-if="calendars.length">
         <ul>
-          <li v-for="(calendar, c) in calendars" :key="c">
+          <li
+            v-for="(calendar, c) in calendars"
+            :key="c">
             <router-link :to="`/calendars/${calendar.id}`">
               {{ calendar.name }}
             </router-link>
-            <button style="margin-left: 15px;" @click="removeCalendar(c)">x</button>
+            <button
+              style="margin-left: 15px;"
+              @click="removeCalendar(c)">
+              x
+            </button>
           </li>
           <li>
-            <button @click="addCalendar">Add Calendar</button>
+            <button @click="addCalendar">
+              Add Calendar
+            </button>
           </li>
         </ul>
       </template>
       <template v-else>
         <div>
           <p>Looks like you don't have any calendars setup!</p>
-          <button style="margin-top: 15px;" @click="addCalendar">Add Calendar</button>
+          <button
+            style="margin-top: 15px;"
+            @click="addCalendar">
+            Add Calendar
+          </button>
         </div>
       </template>
-      </template>
+    </template>
   </div>
 </template>
 
@@ -108,7 +126,8 @@ function getId(): string {
 
 function buildMonths(year: number): Array<Month> {
   function daysInMonth (month: number, year: number) {
-    return 32 - (new Date(year, month, 32)).getDate();
+    return 32 - (new Date(year, month, 32))
+.getDate();
   }
     return Array.from(Array(12), (_, i) => {
       const month = new Date(0, i);
@@ -129,7 +148,8 @@ function cancel() {
 }
 
 function saveCalendar() {
-  const currentYear = (new Date()).getFullYear();
+  const currentYear = (new Date())
+.getFullYear();
   const calendar: Calendar = {
     id: getId(),
     name: calendarName.value,
