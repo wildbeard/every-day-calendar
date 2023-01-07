@@ -1,6 +1,6 @@
 <template>
   <div v-if="pageReady">
-    <h1 class="calendar-name">{{ calendar.name }}</h1>
+    <h1 class="calendar-name">{{ `${calendar.name} (${calendar.year})` }}</h1>
     <div class="d-flex">
       <div>
         <div v-for="m in 12" :key="m">
@@ -35,6 +35,7 @@ interface Month {
 interface CalendarInterface {
   id?: string,
   name?: string,
+  year?: number,
   data: Month[],
 }
 

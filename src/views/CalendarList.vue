@@ -7,9 +7,17 @@
         <div>
           <label for="name">Calendar Name</label>
           <br>
-          <input style="padding: 8px 12px;" type="text" id="name" v-model="calendarName" />
+          <input 
+            type="text" 
+            id="name" 
+            required
+            v-model="calendarName" />
         </div>
-        <button style="margin-top: 15px;" type="submit">Save</button>
+
+        <div style="margin-top: 15px;" class="form-actions">
+          <button @click="cancel">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
      </form>
     </template>
     <template v-else>
@@ -116,6 +124,10 @@ function addCalendar() {
   addingCalendar.value = true;
 }
 
+function cancel() {
+  addingCalendar.value = false;
+}
+
 function saveCalendar() {
   const currentYear = (new Date()).getFullYear();
   const calendar: Calendar = {
@@ -134,3 +146,14 @@ function removeCalendar(idx: number) {
   calendars.value.splice(idx, 1);
 }
 </script>
+
+<style scoped>
+form input {
+  width: 100%;
+  padding: 8px 12px;
+}
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+}
+</style>
