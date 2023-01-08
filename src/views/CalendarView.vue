@@ -43,9 +43,10 @@
     <template v-else>
       <Calendar 
         :month="calendar.data[monthToShow]"
-        @toggle-date="toggleDate" />
+        @toggle-date="toggleDate"
+        @switch-month="switchMonth" />
 
-      <div style="text-align: right;">
+      <div class="mt-5 text-right">
         <button
           type="button"
           class="btn blue"
@@ -119,10 +120,19 @@ onBeforeMount(() => {
 const monthToShow = computed(() => {
   return calendar.value.shownMonth ?? 0;
 });
+
 pageReady.value = true;
 
-function toggleMonth(idx: number) {
-  calendar.value.shownMonth = idx;
+function switchMonth(direction: number | -1 | 1) {
+  let dir = direction;
+
+  if (dir === -1 && monthToShow.value === 0
+    || dir === 1 && monthToShow.value === 11) {
+    dir = 0;
+  }
+
+  // @ts-ignore
+  calendar.value.shownMonth += dir;
   saveCalendar(calendar);
 }
 
