@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="pageReady"
-    class="container px-3.5">
+    class="container mt-5 mx-auto px-3.5">
     <div class="text-center clear-left py-3.5">
       <router-link
         v-if="!editing"

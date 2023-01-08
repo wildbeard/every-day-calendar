@@ -1,5 +1,5 @@
 <template>
-  <div class="container px-3.5">
+  <div class="container mt-5 mx-auto px-3.5">
     <h1 class="text-2xl">
       {{ addingCalendar ? 'Create Calendar' : 'Your Calendars' }}
     </h1>
