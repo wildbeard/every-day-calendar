@@ -1,14 +1,24 @@
 <template>
-  <div v-if="pageReady">
-    <router-link to="/">
-      Back
-    </router-link>
-    <br>
+  <div
+    v-if="pageReady"
+    class="container px-3.5">
+    <div class="text-center clear-left py-3.5">
+      <router-link
+        v-if="!editing"
+        class="float-left text-2xl"
+        to="/">
+        &lt;
+      </router-link>
+
+      <h1>{{ editing ? 'Update Calendar' : `${calendar.name} | ${calendar.year}` }}</h1>
+    </div>
+
     <template v-if="editing">
-      <form @submit.prevent="updateCalendar">
+      <form
+        class="px-3.5"
+        @submit.prevent="updateCalendar">
         <div>
           <label for="name">Calendar Name</label>
-          <br>
           <input
             v-model="calendar.name"
             type="text"
@@ -17,47 +27,31 @@
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 15px;">
           <button
+            class="btn rose"
             type="button"
             @click="editing = false">
             Cancel
           </button>
-          <button type="submit">
+          <button
+            type="submit"
+            class="btn emerald">
             Save
           </button>
         </div>
       </form>
     </template>
     <template v-else>
-      <div>
-        <h1 class="calendar-name">
-          {{ `${calendar.name} (${calendar.year})` }}
-        </h1>
-        <div style="text-align: right;">
-          <button
-            type="button"
-            @click="edit">
-            Edit Calendar
-          </button>
-        </div>
-      </div>
-      <div class="d-flex">
-        <div>
-          <div
-            v-for="m in 12"
-            :key="m">
-            <button 
-              class="month-toggle" 
-              @click="toggleMonth(m - 1)">
-              {{ getMonthName(m - 1) }}
-            </button>
-          </div>
-        </div>
+      <Calendar 
+        :month="calendar.data[monthToShow]"
+        @toggle-date="toggleDate" />
 
-        <div>
-          <Calendar 
-            :month="calendar.data[monthToShow]"
-            @toggle-date="toggleDate" />
-        </div>
+      <div style="text-align: right;">
+        <button
+          type="button"
+          class="btn blue"
+          @click="edit">
+          Edit Calendar
+        </button>
       </div>
     </template>
   </div>
@@ -127,11 +121,6 @@ const monthToShow = computed(() => {
 });
 pageReady.value = true;
 
-function getMonthName(idx: number): String {
-  return (new Date(0, idx))
-.toLocaleString('en-us', { month: 'long' });
-}
-
 function toggleMonth(idx: number) {
   calendar.value.shownMonth = idx;
   saveCalendar(calendar);
@@ -174,7 +163,7 @@ function edit() {
   width: 100%;
   margin-bottom: 5px;
 }
-.calendar-name {
-  font-size: 1.75rem;
+h1 {
+  @apply text-2xl;
 }
 </style>
