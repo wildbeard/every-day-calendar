@@ -180,15 +180,6 @@ function removeCalendar(idx: number) {
   display: flex;
   justify-content: space-between;
 }
-form {
-  @apply mt-5;
-}
-form label {
-  @apply block mb-2 font-semibold;
-}
-form input {
-  @apply w-full py-2.5 px-3 text-slate-800;
-}
 .calendar-list-item {
   @apply flex items-center py-3 px-3.5 odd:bg-purple-600 even:bg-purple-700;
   cursor: pointer;
