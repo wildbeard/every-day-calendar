@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1>{{ addingCalendar ? 'Create Calendar' : 'Your Calendars' }}</h1>
+    <h1 class="text-xs">
+      {{ addingCalendar ? 'Create Calendar' : 'Your Calendars' }}
+    </h1>
 
     <template v-if="addingCalendar">
       <form @submit.prevent="saveCalendar">
