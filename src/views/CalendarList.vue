@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1 class="text-xs">
+  <div class="container px-3.5">
+    <h1 class="text-2xl">
       {{ addingCalendar ? 'Create Calendar' : 'Your Calendars' }}
     </h1>
 
@@ -8,7 +8,6 @@
       <form @submit.prevent="saveCalendar">
         <div>
           <label for="name">Calendar Name</label>
-          <br>
           <input 
             id="name" 
             v-model="calendarName" 
@@ -19,10 +18,14 @@
         <div
           style="margin-top: 15px;"
           class="form-actions">
-          <button @click="cancel">
+          <button
+            class="btn rose"
+            @click="cancel">
             Cancel
           </button>
-          <button type="submit">
+          <button
+            type="submit"
+            class="btn emerald">
             Save
           </button>
         </div>
@@ -30,25 +33,28 @@
     </template>
     <template v-else>
       <template v-if="calendars.length">
-        <ul>
+        <ul class="my-5">
           <li
             v-for="(calendar, c) in calendars"
-            :key="c">
+            :key="c"
+            class="calendar-list-item">
             <router-link :to="`/calendars/${calendar.id}`">
               {{ calendar.name }}
             </router-link>
             <button
-              style="margin-left: 15px;"
+              class="btn rose"
               @click="removeCalendar(c)">
-              x
-            </button>
-          </li>
-          <li>
-            <button @click="addCalendar">
-              Add Calendar
+              &times;
             </button>
           </li>
         </ul>
+        <div class="text-right">
+          <button
+            class="btn emerald"
+            @click="addCalendar">
+            Add Calendar
+          </button>
+        </div>
       </template>
       <template v-else>
         <div>
@@ -170,12 +176,27 @@ function removeCalendar(idx: number) {
 </script>
 
 <style scoped>
-form input {
-  width: 100%;
-  padding: 8px 12px;
-}
 .form-actions {
   display: flex;
   justify-content: space-between;
+}
+form {
+  @apply mt-5;
+}
+form label {
+  @apply block mb-2 font-semibold;
+}
+form input {
+  @apply w-full py-2.5 px-3 text-slate-800;
+}
+.calendar-list-item {
+  @apply flex items-center py-3 px-3.5 odd:bg-purple-600 even:bg-purple-700;
+  cursor: pointer;
+}
+.calendar-list-item a {
+  width: 100%;
+}
+.calendar-list-item button {
+  @apply py-0 px-2.5 text-2xl bg-rose-600 rounded-full;
 }
 </style>
