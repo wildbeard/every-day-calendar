@@ -2,7 +2,21 @@
   <div class="wrapper">
     <div class="month">
       <div class="month-name">
+        <button
+          type="button"
+          class="btn blue previous-btn"
+          @click="prev">
+          &lt;
+        </button>
+
         {{ month.full }}
+
+        <button
+          type="button"
+          class="btn blue next-btn"
+          @click="next">
+          &gt;
+        </button>
       </div>
       <div
         v-for="(week, w) in weeks"
@@ -38,7 +52,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emits = defineEmits(['toggleDate']);
+const emits = defineEmits(['toggleDate', 'switchMonth']);
 
 const weeks = computed(() => {
   const days = props.month.days;
@@ -69,41 +83,41 @@ function toggleCheck(day: number) {
   const month = months.indexOf(props.month.short);
   emits('toggleDate', { month, day });
 }
+
+function prev() {
+  emits('switchMonth', -1);
+}
+
+function next() {
+  emits('switchMonth', 1);
+}
 </script>
 
-<style>
+<style scoped>
 .wrapper {
-  display: flex;
-}
-.month-name {
-  margin-bottom: 15px;
-  font-size: 1.75rem;
+  @apply flex mt-5;
 }
 .month {
-  padding: 0 10px;
-  text-align: center;
+  @apply mx-auto;
+}
+.month-name {
+  @apply flex justify-between items-center mb-5 text-2xl;
+}
+.month-name .btn {
+  @apply py-1 rounded-full text-base;
 }
 .week {
-  display: flex;
-  margin-bottom: 10px;
+  @apply flex mb-3;
 }
 .day {
+  @apply p-2 text-slate-700 leading-4 text-center bg-slate-200 rounded-full;
   width: 35px;
   height: 35px;
-  padding: .5rem;
-  color: #333;
-  line-height: 1;
-  background-color: #f2f2f2;
-  border-radius: 50%;
 }
 .day:not(:last-child) {
   margin-right: 10px;
 }
-.day:hover {
-  cursor: pointer;
-}
 .day.checked {
-  color: #fff;
-  background-color: hsla(160, 100%, 37%, 0.2);
+  @apply text-slate-200 bg-emerald-400;
 }
 </style>
