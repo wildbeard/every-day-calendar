@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  @apply text-zinc-200 bg-slate-800;
+}
+.btn {
+  @apply py-2.5 px-3;
+}
+.btn.rose {
+  @apply bg-rose-600 hover:bg-rose-700 active:bg-rose-700;
+}
+.btn.emerald {
+  @apply bg-emerald-500 hover:bg-emerald-700 active:bg-emerald-700;
+}
